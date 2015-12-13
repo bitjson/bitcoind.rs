@@ -1,0 +1,6 @@
+[package]
+name = "bitcoind"
+version = "0.1.0"
+authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
+
+[dependencies]
