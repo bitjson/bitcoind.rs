@@ -14,13 +14,73 @@ pub fn connect(host: &'static str, port: u16) {
         
         let mut socket = Socket::new(Network::Testnet);
         
-        fn recieve_message(mut socket: Socket) {
-            match socket.receive_message() {
-                Ok(payload) => {
-                    println!("received {:?}",payload);
-                }
+        fn send_pong(mut socket: Socket, nonce: u64) {
+            let pong_message = NetworkMessage::Pong(nonce);
+            
+            match socket.send_message(pong_message) {
+                Ok(()) => {
+                    println!("pong sent");
+                },
                 Err(e) => {
                     println!("error {:?}",e);
+                }
+            }
+        }
+        
+        fn recieve_message(mut socket: Socket) {
+            loop {
+                match socket.receive_message() {
+                    Ok(payload) => {
+                        println!("received {:?}",payload);
+                        match payload {
+                            NetworkMessage::Version(nonce) => {
+                                println!("ping nonce {:?}", nonce);
+                            }
+                            NetworkMessage::Verack => {
+                                println!("verack");
+                            }
+                            NetworkMessage::Ping(nonce) => {
+                                println!("ping nonce {:?}", nonce);
+                                send_pong(socket.clone(), nonce);
+                            }
+                            NetworkMessage::Addr(addr) => {
+                                println!("addr {:?}", addr);
+                            }
+                            NetworkMessage::Inv(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::GetData(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::NotFound(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::GetBlocks(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::GetHeaders(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::Tx(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::Block(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::Headers(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::Pong(inv) => {
+                                println!("addr {:?}", inv);
+                            }
+                            NetworkMessage::MemPool => {
+                                println!("addr");
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        println!("error {:?}",e);
+                    }
                 }
             }
         }
