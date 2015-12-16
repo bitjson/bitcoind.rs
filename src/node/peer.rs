@@ -11,12 +11,12 @@ use bitcoin::network::message_network::VersionMessage;
 pub fn connect(host: &'static str, port: u16) {
 
     thread::spawn( move || {
-        
+
         let mut socket = Socket::new(Network::Testnet);
-        
+
         fn send_pong(mut socket: Socket, nonce: u64) {
             let pong_message = NetworkMessage::Pong(nonce);
-            
+
             match socket.send_message(pong_message) {
                 Ok(()) => {
                     println!("pong sent");
@@ -26,7 +26,7 @@ pub fn connect(host: &'static str, port: u16) {
                 }
             }
         }
-        
+
         fn recieve_message(mut socket: Socket) {
             loop {
                 match socket.receive_message() {
@@ -47,34 +47,34 @@ pub fn connect(host: &'static str, port: u16) {
                                 println!("addr {:?}", addr);
                             }
                             NetworkMessage::Inv(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("Inv {:?}", inv);
                             }
                             NetworkMessage::GetData(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("GetData {:?}", inv);
                             }
                             NetworkMessage::NotFound(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("NotFound {:?}", inv);
                             }
                             NetworkMessage::GetBlocks(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("GetBlocks {:?}", inv);
                             }
                             NetworkMessage::GetHeaders(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("GetHeaders {:?}", inv);
                             }
                             NetworkMessage::Tx(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("Tx {:?}", inv);
                             }
                             NetworkMessage::Block(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("Block {:?}", inv);
                             }
                             NetworkMessage::Headers(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("Headers {:?}", inv);
                             }
                             NetworkMessage::Pong(inv) => {
-                                println!("addr {:?}", inv);
+                                println!("Pong {:?}", inv);
                             }
                             NetworkMessage::MemPool => {
-                                println!("addr");
+                                println!("MemPool");
                             }
                         }
                     }
@@ -84,7 +84,7 @@ pub fn connect(host: &'static str, port: u16) {
                 }
             }
         }
-        
+
         fn send_version_message(mut socket: Socket, version_message: VersionMessage) {
             let network_message = NetworkMessage::Version(version_message);
             match socket.send_message(network_message) {
@@ -94,7 +94,7 @@ pub fn connect(host: &'static str, port: u16) {
                 }
             }
         }
-        
+
         fn on_connected(mut socket: Socket) {
             match VersionMessage::new(14213, socket.clone(), 12421, 2048) {
                 Ok(version_message) => send_version_message(socket, version_message),
@@ -103,14 +103,14 @@ pub fn connect(host: &'static str, port: u16) {
                 }
             }
         }
-        
+
         match socket.connect(host, port) {
             Ok(()) => on_connected(socket),
             Err(e) => {
                 println!("error {:?}", e);
             }
         }
-        
+
     });
-    
+
 }
