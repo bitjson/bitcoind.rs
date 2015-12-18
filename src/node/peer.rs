@@ -72,14 +72,16 @@ pub fn connect(host: &'static str, port: u16) {
 
         fn pinger(mut socket: Socket, rx: Receiver<NetworkMessage>) {
 
+            let ping_interval = Duration::from_secs(120);
+            let mut rng = rand::thread_rng();
+            let between = Range::new(u64::MIN, u64::MAX);
+
             loop {
 
+                let nonce = between.ind_sample(&mut rng);
+                let ping_message = NetworkMessage::Ping(nonce);
 
-                let ping_interval = Duration::from_secs(1);
-                thread::sleep(ping_interval);
-                    println!("sending ping ");
-
-                match socket.send_message(NetworkMessage::Ping(1243)) {
+                match socket.send_message(ping_message) {
                     Ok(()) => {
                         println!("sent ping ");
                     },
@@ -89,20 +91,22 @@ pub fn connect(host: &'static str, port: u16) {
                 }
 
 
+                thread::sleep(ping_interval);
 
+                match rx.try_recv() {
+                    Ok(payload) => {
+                        println!("pong received by pinger {:?} ", payload);
+                    },
+                    Err(e) => {
+                        println!("error {:?}",e);
+                        break;
+                    }
+                }
 
-                // let messageW = rx.recv();
-                //
-                // match messageW {
-                //     Ok(message) => {
-                //         println!("local received {:?}", message);
-                //     },
-                //     Err(e) => {
-                //         println!("error {:?}",e);
-                //     }
-                // }
 
             }
+
+            println!("Peer didn't respond to ping");
         }
 
         fn receiver(mut socket: Socket, tx: Sender<NetworkMessage>) {
@@ -162,7 +166,7 @@ pub fn connect(host: &'static str, port: u16) {
                         println!("error {:?}",e);
                     }
                 }
-                
+
                 let ping_interval = Duration::from_secs(1);
                 thread::sleep(ping_interval);
             }
