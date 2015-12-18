@@ -3,7 +3,6 @@ name = "bitcoind"
 version = "0.1.0"
 authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
 
-# [dependencies]
-
-[dependencies.bitcoin]
-path = "../rust-bitcoin"
+[dependencies]
+rand = "*"
+bitcoin = { path = "../rust-bitcoin" }
