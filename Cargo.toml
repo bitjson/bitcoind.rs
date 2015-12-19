@@ -5,4 +5,5 @@ authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
 
 [dependencies]
 rand = "*"
+leveldb = { path = "../leveldb" }
 bitcoin = { path = "../rust-bitcoin" }
