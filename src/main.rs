@@ -1,17 +1,14 @@
 extern crate bitcoin;
 extern crate leveldb;
 
-pub mod node;
-
-use node::peer::connect;
-use node::db::test_ldb;
 use std::io;
 use std::io::prelude::*;
 
-fn main() {
-    test_ldb();
+mod node;
 
-    //connect("127.0.0.1", 8333);
+fn main() {
+
+    node::daemon::start();
 
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
