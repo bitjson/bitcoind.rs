@@ -8,7 +8,7 @@ mod node;
 
 fn main() {
 
-    node::daemon::start();
+    node::daemon::start();                
 
     let stdin = io::stdin();
     for line in stdin.lock().lines() {

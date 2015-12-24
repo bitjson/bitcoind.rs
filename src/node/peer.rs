@@ -14,11 +14,22 @@ use bitcoin::network::message::NetworkMessage;
 use bitcoin::network::message::SocketResponse;
 use bitcoin::network::message_network::VersionMessage;
 
-pub fn connect(host: &'static str, port: u16) {
+pub fn connect(host: &'static str, port: u16) -> Socket{
+
+
+
+    let mut socket = Socket::new(Network::Testnet);
+
+    match socket.connect(host, port) {
+        Ok(()) => recv_loop(socket.clone()),
+        Err(e) => {
+            println!("error {:?}", e);
+        }
+    }
+
+    fn recv_loop(socket : Socket) {
 
     thread::spawn( move || {
-
-        let mut socket = Socket::new(Network::Testnet);
 
         fn send_ping(tx: Sender<NetworkMessage>) {
 
@@ -203,22 +214,18 @@ pub fn connect(host: &'static str, port: u16) {
             }
         }
 
-        fn on_connected(mut socket: Socket) {
             match VersionMessage::new(14213, socket.clone(), 12421, 2048) {
                 Ok(version_message) => send_version_message(socket, version_message),
                 Err(e) => {
                     println!("error {:?}", e);
                 }
             }
-        }
 
-        match socket.connect(host, port) {
-            Ok(()) => on_connected(socket),
-            Err(e) => {
-                println!("error {:?}", e);
-            }
-        }
 
     });
+
+}
+
+    return socket;
 
 }

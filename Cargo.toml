@@ -7,3 +7,4 @@ authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
 rand = "*"
 leveldb = "*"
 bitcoin = { path = "../rust-bitcoin" }
+rustc-serialize = "*"

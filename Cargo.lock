@@ -5,6 +5,7 @@ dependencies = [
  "bitcoin 0.4.5",
  "leveldb 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rustc-serialize 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
