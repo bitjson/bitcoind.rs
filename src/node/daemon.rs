@@ -1,4 +1,5 @@
-use node::db::test_ldb;
+use node::db::save_blocks;
+use node::db::read_blocks;
 use node::peer::connect;
 
 use std::thread;
@@ -20,23 +21,28 @@ extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
 pub fn start() {
-    test_ldb();
+    // read_blocks();
+    // return;
 
 
-    let (txDaemon, rxDaemon) = channel::<Vec<Inventory>>();
+        let waitTime = Duration::from_secs(10);
 
-    let mut socket = connect("127.0.0.1", 8333, txDaemon);
+    let (tx_daemon, rxDaemon) = channel::<Vec<Inventory>>();
+
+    let mut socket = connect("127.0.0.1", 8333, tx_daemon);
 
 
     thread::spawn( move || {
         loop {
+            thread::sleep(waitTime);
             match rxDaemon.recv() {
                 Ok(payload) => {
                     println!("recv inv thru tunnl {:?}", payload.len());
 
-                    for inv in payload {
-                        println!("inv iter {:?}", inv);
-                    }
+                    // for inv in payload {
+                    //     println!("inv iter {:?}", inv);
+                    // }
+                    save_blocks(payload);
                 },
                 Err(e) => {
                     println!("getblocks error {:?}",e);
@@ -47,14 +53,15 @@ pub fn start() {
 
 
 
-    let waitTime = Duration::from_secs(10);
 
 
-    let hash = "00000000d14451e1f057e65b076f3aacb30da7cf0fde3d43419b08a207b94bfd".from_hex().unwrap();
-    let hash2 = "00000000c2d671c26e69d1baede1e4e6891a63dca35457d58175d55f98720d6c".from_hex().unwrap();
 
-        let sha = Sha256dHash::from_data(&hash);
-            let sha2 = Sha256dHash::from_data(&hash2);
+    let sha = Sha256dHash::from_hex("000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd").unwrap();
+    let sha2 = Sha256dHash::from_hex("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f").unwrap();
+
+        println!("sha1 {:?}",sha);
+            println!("sha2 {:?}",sha2);
+
 
     let mut locator_hashes : Vec<Sha256dHash> = Vec::new();
     locator_hashes.push(sha);

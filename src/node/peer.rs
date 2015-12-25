@@ -15,14 +15,14 @@ use bitcoin::network::message::SocketResponse;
 use bitcoin::network::message_network::VersionMessage;
 use bitcoin::network::message_blockdata::Inventory;
 
-pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) -> Socket{
+pub fn connect(host: &'static str, port: u16, tx_daemon: Sender<Vec<Inventory>>) -> Socket{
 
 
 
     let mut socket = Socket::new(Network::Testnet);
 
     match socket.connect(host, port) {
-        Ok(()) => recv_loop(socket.clone(), txDaemon),
+        Ok(()) => recv_loop(socket.clone(), tx_daemon),
         Err(e) => {
             println!("error {:?}", e);
         }
@@ -117,7 +117,7 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
         println!("Peer didn't respond to ping");
     }
 
-    fn receiver(mut socket: Socket, tx: Sender<NetworkMessage>, txDaemon: Sender<Vec<Inventory>>) {
+    fn receiver(mut socket: Socket, tx: Sender<NetworkMessage>, tx_daemon: Sender<Vec<Inventory>>) {
         loop {
             match socket.receive_message() {
                 Ok(payload) => {
@@ -139,7 +139,7 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
                             println!("addr {:?}", addr);
                         }
                         NetworkMessage::Inv(inv) => {
-                            txDaemon.send(inv);
+                            tx_daemon.send(inv);
                         }
                         NetworkMessage::GetData(inv) => {
                             println!("GetData {:?}", inv);
@@ -181,7 +181,7 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
         }
     }
 
-    fn send_version_message(mut socket: Socket, version_message: VersionMessage, txDaemon: Sender<Vec<Inventory>>) {
+    fn send_version_message(mut socket: Socket, version_message: VersionMessage, tx_daemon: Sender<Vec<Inventory>>) {
         let network_message = NetworkMessage::Version(version_message);
         match socket.send_message(network_message) {
             Ok(()) => {
@@ -192,7 +192,7 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
                 let receiver_socket = socket.clone();
 
                 thread::spawn( move || {
-                    receiver(receiver_socket, txMessageReceiver, txDaemon);
+                    receiver(receiver_socket, txMessageReceiver, tx_daemon);
                 });
 
                 thread::spawn( move || {
@@ -200,7 +200,7 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
                 });
 
                 // thread::spawn( move || {
-                //     loop {txDaemon: Sender<Vec<Inventory>>
+                //     loop {tx_daemon: Sender<Vec<Inventory>>
                 //         send_pong(&mut sender_socket.clone(), 2353);
                 //     }
                 // });
@@ -212,12 +212,12 @@ pub fn connect(host: &'static str, port: u16, txDaemon: Sender<Vec<Inventory>>) 
         }
     }
 
-    fn recv_loop(socket : Socket, txDaemon: Sender<Vec<Inventory>>) {
+    fn recv_loop(socket : Socket, tx_daemon: Sender<Vec<Inventory>>) {
 
         thread::spawn( move || {
 
                 match VersionMessage::new(14213, socket.clone(), 12421, 2048) {
-                    Ok(version_message) => send_version_message(socket, version_message, txDaemon),
+                    Ok(version_message) => send_version_message(socket, version_message, tx_daemon),
                     Err(e) => {
                         println!("error {:?}", e);
                     }
