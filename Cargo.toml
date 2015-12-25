@@ -5,6 +5,6 @@ authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
 
 [dependencies]
 rand = "*"
-leveldb = "*"
+lmdb = "0.5.0"
 bitcoin = { path = "../rust-bitcoin" }
 rustc-serialize = "*"

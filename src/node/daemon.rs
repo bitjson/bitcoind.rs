@@ -1,8 +1,10 @@
-use node::db::save_blocks;
-use node::db::read_blocks;
+// use node::db::save_blocks;
+// use node::db::read_blocks;
+use node::db::DataStore;
 use node::peer::connect;
 
 use std::thread;
+use std::path::Path;
 use std::time::Duration;
 use std::sync::mpsc::{channel, Sender, Receiver};
 
@@ -21,11 +23,16 @@ extern crate rustc_serialize;
 use self::rustc_serialize::hex::FromHex;
 
 pub fn start() {
-    // read_blocks();
-    // return;
 
 
-        let waitTime = Duration::from_secs(10);
+    let path = Path::new("./data");
+    let datastore = DataStore::new(path);
+
+    datastore.read_blocks();
+    return;
+
+
+    let waitTime = Duration::from_secs(10);
 
     let (tx_daemon, rxDaemon) = channel::<Vec<Inventory>>();
 
@@ -42,7 +49,7 @@ pub fn start() {
                     // for inv in payload {
                     //     println!("inv iter {:?}", inv);
                     // }
-                    save_blocks(payload);
+                    datastore.save_blocks(payload);
                 },
                 Err(e) => {
                     println!("getblocks error {:?}",e);
@@ -56,8 +63,8 @@ pub fn start() {
 
 
 
-    let sha = Sha256dHash::from_hex("000000006a625f06636b8bb6ac7b960a8d03705d1ace08b1a19da3fdcc99ddbd").unwrap();
-    let sha2 = Sha256dHash::from_hex("000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f").unwrap();
+    let sha = Sha256dHash::from_hex("000000001695f1cae23b2b7f9c4879f210706a42d9d9c96146fcc66c6e87b2c2").unwrap();
+    let sha2 = Sha256dHash::from_hex("00000000000067bf5f3ab6ba97e33bd6488155aafd0bc449084f8a854ce41594").unwrap();
 
         println!("sha1 {:?}",sha);
             println!("sha2 {:?}",sha2);

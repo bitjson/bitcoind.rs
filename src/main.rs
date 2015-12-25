@@ -1,5 +1,4 @@
 extern crate bitcoin;
-extern crate leveldb;
 
 use std::io;
 use std::io::prelude::*;
@@ -8,7 +7,7 @@ mod node;
 
 fn main() {
 
-    node::daemon::start();                
+    node::daemon::start();
 
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
