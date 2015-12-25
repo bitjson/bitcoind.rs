@@ -1,8 +1,6 @@
-extern crate lmdb;
-
 use std::path::Path;
 
-use self::lmdb::{Cursor, Environment, Transaction, WriteFlags};
+use lmdb::{Cursor, Environment, Transaction, WriteFlags, DatabaseFlags};
 
 use bitcoin::network::message_blockdata::Inventory;
 use bitcoin::network::serialize::serialize;
@@ -25,7 +23,7 @@ impl DataStore {
 
         let db_name = "blocks".to_string();
         let db = self.environment
-                     .create_db(Some(&db_name), lmdb::DatabaseFlags::empty())
+                     .create_db(Some(&db_name), DatabaseFlags::empty())
                      .expect("Unable to open database");
 
         let mut txn = self.environment.begin_rw_txn().unwrap();
@@ -54,7 +52,7 @@ impl DataStore {
 
         let db_name = "blocks".to_string();
         let db = self.environment
-                     .create_db(Some(&db_name), lmdb::DatabaseFlags::empty())
+                     .create_db(Some(&db_name), DatabaseFlags::empty())
                      .expect("Unable to open database");
 
         let txn = self.environment.begin_ro_txn().expect("asd");

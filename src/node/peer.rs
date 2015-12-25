@@ -1,12 +1,9 @@
-extern crate bitcoin;
-extern crate rand;
-
 use std::thread;
 use std::time::Duration;
 use std::u64;
 use std::sync::mpsc::{channel, Sender, Receiver};
-use self::rand::distributions::{IndependentSample, Range};
-
+use rand;
+use rand::distributions::{IndependentSample, Range};
 use bitcoin::network::socket::Socket;
 use bitcoin::network::constants::Network;
 use bitcoin::network::message::NetworkMessage;
@@ -14,8 +11,6 @@ use bitcoin::network::message_network::VersionMessage;
 use bitcoin::network::message_blockdata::Inventory;
 
 pub fn connect(host: &'static str, port: u16, tx_daemon: Sender<Vec<Inventory>>) -> Socket {
-
-
 
     let mut socket = Socket::new(Network::Testnet);
 

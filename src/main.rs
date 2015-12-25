@@ -1,4 +1,7 @@
 extern crate bitcoin;
+extern crate lmdb;
+extern crate rustc_serialize;
+extern crate rand;
 
 use std::io;
 use std::io::prelude::*;

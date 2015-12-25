@@ -13,12 +13,9 @@ use bitcoin::network::message::NetworkMessage;
 use bitcoin::network::message_blockdata::GetBlocksMessage;
 use bitcoin::network::message_blockdata::Inventory;
 
-extern crate rustc_serialize;
-
-use self::rustc_serialize::hex::FromHex;
+use rustc_serialize::hex::FromHex;
 
 pub fn start() {
-
 
     let path = Path::new("./data");
     let datastore = DataStore::new(path);
@@ -50,10 +47,6 @@ pub fn start() {
             }
         }
     });
-
-
-
-
 
 
     let sha = Sha256dHash::from_hex("000000001695f1cae23b2b7f9c4879f210706a42d9d9c96146fcc66c6e87\

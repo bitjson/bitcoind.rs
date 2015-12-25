@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Nicholas Alan Cardin <nacardin@gmail.com>"]
 
 [dependencies]
-rand = "*"
+rand = "0.3.12"
 lmdb = "0.5.0"
 bitcoin = { path = "../rust-bitcoin" }
-rustc-serialize = "*"
+rustc-serialize = "0.3.16"
